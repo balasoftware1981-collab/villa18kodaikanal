@@ -14,7 +14,7 @@ const Hero = () => {
           Kodaikanal, Tamil Nadu
         </p>
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground mb-6 leading-[1.1]">
-          Villa 18
+          Villa18
         </h1>
         <p className="font-display text-xl md:text-2xl text-primary-foreground/90 italic mb-10">
           Stay Above The Clouds

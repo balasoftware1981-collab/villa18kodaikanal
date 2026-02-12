@@ -19,7 +19,7 @@ const Gallery = () => {
             Glimpses
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground">
-            Moments at Villa 18
+            Moments at Villa18
           </h2>
         </div>
 
