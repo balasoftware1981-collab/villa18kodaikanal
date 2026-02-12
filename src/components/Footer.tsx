@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <h3 className="font-display text-2xl font-bold mb-1">Villa 18</h3>
+            <h3 className="font-display text-2xl font-bold mb-1">Villa18</h3>
             <p className="font-body text-primary-foreground/60 text-sm">
               Stay Above The Clouds · Kodaikanal
             </p>
@@ -21,7 +21,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="font-body text-xs text-primary-foreground/40">
-            © {new Date().getFullYear()} Villa 18. All rights reserved.
+            © {new Date().getFullYear()} Villa18. All rights reserved.
           </p>
         </div>
       </div>

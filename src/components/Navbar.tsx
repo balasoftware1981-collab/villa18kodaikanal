@@ -29,7 +29,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between px-6">
         <a href="#" className="font-display text-2xl font-bold text-primary-foreground tracking-wide">
-          Villa 18
+          Villa18
         </a>
 
         {/* Desktop */}

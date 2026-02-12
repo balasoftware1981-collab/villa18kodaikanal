@@ -10,7 +10,7 @@ const About = () => {
         </h2>
         <div className="w-16 h-[2px] bg-accent mx-auto mb-8" />
         <p className="font-body text-muted-foreground text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-          Nestled in the heart of Kodaikanal, Villa 18 offers a tranquil retreat 
+          Nestled in the heart of Kodaikanal, Villa18 offers a tranquil retreat 
           with breathtaking views and unparalleled comfort. Experience the perfect 
           blend of nature's beauty and modern luxury. Each room opens to a private 
           balcony, letting you soak in the majestic scenery from the moment you wake.
