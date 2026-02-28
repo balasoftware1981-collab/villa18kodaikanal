@@ -1,4 +1,3 @@
-
 -- Create room_rates table
 CREATE TABLE public.room_rates (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
