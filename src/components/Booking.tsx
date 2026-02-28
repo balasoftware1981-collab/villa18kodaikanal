@@ -1,5 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { differenceInDays } from "date-fns";
+
+interface RoomRate {
+  id: string;
+  room_name: string;
+  base_price: number;
+  season_price: number;
+}
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -11,10 +20,34 @@ const Booking = () => {
     message: "",
   });
 
+  const [roomRates, setRoomRates] = useState<RoomRate[]>([]);
+  const [useSeason, setUseSeason] = useState(false);
+
+  useEffect(() => {
+    const fetchRates = async () => {
+      const { data } = await supabase.from("room_rates").select("*");
+      if (data) setRoomRates(data);
+    };
+    fetchRates();
+  }, []);
+
+  const totalCost = useMemo(() => {
+    if (!formData.room || !formData.checkin || !formData.checkout) return null;
+    const rate = roomRates.find((r) => r.room_name === formData.room);
+    if (!rate) return null;
+    const nights = differenceInDays(new Date(formData.checkout), new Date(formData.checkin));
+    if (nights <= 0) return null;
+    const pricePerNight = useSeason ? rate.season_price : rate.base_price;
+    return { nights, pricePerNight, total: nights * pricePerNight };
+  }, [formData.room, formData.checkin, formData.checkout, roomRates, useSeason]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const costInfo = totalCost
+      ? `%0AEstimated Cost: ₹${totalCost.total.toLocaleString("en-IN")} (${totalCost.nights} nights × ₹${totalCost.pricePerNight.toLocaleString("en-IN")}/night)`
+      : "";
     const subject = `Booking Inquiry - ${formData.room || "General"}`;
-    const body = `Name: ${formData.name}%0AEmail: ${formData.email}%0ACheck-in: ${formData.checkin}%0ACheck-out: ${formData.checkout}%0ARoom: ${formData.room}%0AMessage: ${formData.message}`;
+    const body = `Name: ${formData.name}%0AEmail: ${formData.email}%0ACheck-in: ${formData.checkin}%0ACheck-out: ${formData.checkout}%0ARoom: ${formData.room}%0AMessage: ${formData.message}${costInfo}`;
     window.location.href = `mailto:dineshvilla18@gmail.com?subject=${subject}&body=${body}`;
   };
 
@@ -129,12 +162,43 @@ const Booking = () => {
                 className="w-full bg-card border border-border px-4 py-3 font-body text-foreground focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="">Select a room</option>
-                <option value="Standard Room">Standard Room</option>
-                <option value="Deluxe Room with Bathtub">Deluxe Room with Bathtub</option>
-                <option value="Owner Suite (2 Bedrooms)">Owner Suite (2 Bedrooms)</option>
-                <option value="Royal Suite (4 Bedrooms)">Royal Suite (4 Bedrooms)</option>
+                {roomRates.map((rate) => (
+                  <option key={rate.id} value={rate.room_name}>
+                    {rate.room_name} — ₹{Number(rate.base_price).toLocaleString("en-IN")}/night
+                  </option>
+                ))}
               </select>
             </div>
+
+            {/* Season toggle */}
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="season-toggle"
+                checked={useSeason}
+                onChange={(e) => setUseSeason(e.target.checked)}
+                className="accent-accent w-4 h-4"
+              />
+              <label htmlFor="season-toggle" className="font-body text-sm text-muted-foreground">
+                Peak season / Holiday pricing
+              </label>
+            </div>
+
+            {/* Price estimate */}
+            {totalCost && (
+              <div className="bg-card border border-accent/30 p-5 space-y-1">
+                <p className="font-body text-xs tracking-widest uppercase text-accent font-semibold">
+                  Estimated Cost
+                </p>
+                <p className="font-display text-2xl font-bold text-foreground">
+                  ₹{totalCost.total.toLocaleString("en-IN")}
+                </p>
+                <p className="font-body text-sm text-muted-foreground">
+                  {totalCost.nights} night{totalCost.nights > 1 ? "s" : ""} × ₹{totalCost.pricePerNight.toLocaleString("en-IN")}/night
+                  {useSeason && <span className="text-accent ml-1">(peak season)</span>}
+                </p>
+              </div>
+            )}
 
             <div>
               <label className="block font-body text-xs tracking-widest uppercase text-muted-foreground mb-2">
